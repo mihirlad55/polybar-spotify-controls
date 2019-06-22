@@ -58,19 +58,25 @@ def event_handler(*args, **kwargs):
     """arg[1] contains metadata"""
     """arg[1][1] contains PlaybackStatus"""
     data = unwrap(args)
+
+    paths = glob.glob("/tmp/polybar_mqueue*")
+
     if data[1]['PlaybackStatus'] == "Playing":
         print("Music is playing")
         """ Send IPC hook 2 to the bottom bar pid for module playpause """
-        with open("/tmp/ipc-bottom", "w") as text_file:
-            print("hook:module/playpause2", file=text_file)
+        for queue in paths:
+            with open(queue, "w") as text_file:
+                print("hook:module/playpause2", file=text_file)
     if data[1]['PlaybackStatus'] == "Paused":
         print("Music is paused.")
         """ Send IPC hook 3 to the bottom bar pid for module playpause """
-        with open("/tmp/ipc-bottom", "w") as text_file:
-            print("hook:module/playpause3", file=text_file)
+        for queue in paths:
+            with open(queue, "w") as text_file:
+                print("hook:module/playpause3", file=text_file)
     """ Send IPC hook 2 to the bottom bar pid for module spotify """
-    with open("/tmp/ipc-bottom", "w") as text_file:
-        print("hook:module/spotify2", file=text_file)
+    for queue in paths:
+        with open(queue, "w") as text_file:
+            print("hook:module/spotify2", file=text_file)
 
 def unwrap(val):
     if isinstance(val, dbus.ByteArray):
